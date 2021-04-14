@@ -14,6 +14,8 @@ abstract class IHttp{
   int timeout()=>10*1000;
   ///设置请求拦截器
   List<InterceptorsWrapper> interceptors()=>null;
+  ///设置转换器
+  DefaultTransformer transformer()=>DefaultTransformer();
   ///创建一个Dio
   Dio create(){
     _dio.options.baseUrl=baseUrl();
@@ -21,6 +23,7 @@ abstract class IHttp{
     interceptors()?.forEach((element) {
       _dio.interceptors.add(element);
     });
+    _dio.transformer=transformer();
     (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate=(client){
       ///设置代理
       client.findProxy = (uri) {
