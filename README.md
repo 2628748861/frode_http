@@ -1,36 +1,28 @@
-# frode_http
+# dio_request 
 
-flutter基于retrofit+dio实现网络请求.
+A new Flutter package for http request width dio.
 
 ## Getting Started
 
-注意该插件已依赖retrofit,dio.
+提取了dio特性,封装为一个抽象的http请求类,精简了创建dio各种属性的设置,在实际应用中结合[retrofit](https://pub.dev/packages/retrofit)进行开发将会更加快速便捷.
+## 注意
 
-```
-retrofit: ^1.3.4+1
-dio: ^3.0.4
-```
+为避免太多的依赖冲突,此依赖并没有引用[retrofit](https://pub.dev/packages/retrofit)相关依赖.如需使用请自行依赖.
 
 
-[github项目主页地址](https://github.com/2628748861/frode_http.git)
+[github项目主页地址](https://github.com/2628748861/frode_http)
 
-安装依赖:
+## 安装依赖
 
 ```
 dependencies:
-  frode_http: xx
-  json_annotation: xx (可选)
-
-dev_dependencies:
-  build_runner: xx
-  retrofit_generator: xx
-  json_serializable: xx (可选)
+  dio_request: xx
 ```
 
-使用方法:
+## 使用方法
 
-
-1.创建dio继承IHttp
+###### 在已安装依赖的前提下,按如下操作完成:
+-  ###### 继承IHttp创建一个网络请求类
 
 ```
 class DefaultHttp extends IHttp{
@@ -48,48 +40,40 @@ class DefaultHttp extends IHttp{
 
 }
 ```
-
-2.使用retrofit自动生成的方式生成具体请求接口类
+-  ###### 引用
 
 ```
-@RestApi()
-abstract class Api{
+var http=DefaultHttp().create()
+http.get(...)
+```
 
- factory Api(Dio dio, {String baseUrl}) {
-    return _Api(dio,baseUrl: baseUrl);
+- ###### 设置baseUrl
+```
+ @override
+  String baseUrl() {
+    return 'xxx';
   }
-
-  @POST('/o_s_app/auth/login')
-  Future<BaseResponse> login(@Body() Login login);
-
- @GET('/o_s_app/sales-app/app/visitingCard/info')
- Future<BaseResponse> cardInfo();
-}
 ```
-
-3.发起请求
+- ###### 设置超时时间
+```
+ @override
+  int timeout() {
+    return 10*1000;
+  } 
+```
+- ###### 设置代理(抓包专用)
+```
+@override
+  String proxy() =>'xx';
+```
+- ###### 设置拦截器
+```
+@override
+  List<InterceptorsWrapper> interceptors() =>[...];
+```
+- ###### 设置转换器
 
 ```
-Api(DefaultHttp().create()).login(Login('xx','xx')).then((value){
-      print('请求结果为:$value');
-    }).catchError((e){
-      print('异常信息为:${e?.message}');
-    });
+@override
+  DefaultTransformer transformer() =>MyTransformer();
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
